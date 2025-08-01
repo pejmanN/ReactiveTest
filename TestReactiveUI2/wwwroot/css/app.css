@@ -101,3 +101,49 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+
+.weather-container, .search-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.weather-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.weather-item {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.search-box {
+    margin-bottom: 20px;
+}
+
+.loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.result-card {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+    .result-card h4 {
+        margin: 0 0 10px 0;
+    }
+
+    .result-card p {
+        margin: 0;
+        color: #666;
+    }

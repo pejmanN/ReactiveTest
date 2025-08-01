@@ -1,0 +1,42 @@
+﻿@page "/search"
+@using TestReactiveUI2.ViewModels
+@inherits ReactiveComponentBase<SearchViewModel>
+
+<div class="search-container">
+    <h2>Search</h2>
+
+    <div class="search-box">
+        <input type="text"
+               @bind-value="ViewModel.SearchTerm"
+               @bind-value:event="oninput"
+               placeholder="Type to search..."
+               class="form-control" />
+    </div>
+
+    @if (ViewModel.IsSearching)
+    {
+        <div class="loading">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+
+    <div class="search-results">
+        @foreach (var result in ViewModel.SearchResults)
+        {
+            <div class="result-card">
+                <h4>@result.Title</h4>
+                <p>@result.Description</p>
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel = new SearchViewModel();
+        base.OnInitialized();
+    }
+}
