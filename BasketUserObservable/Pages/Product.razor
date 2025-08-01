@@ -1,0 +1,17 @@
+﻿@using BasketUserObservable.Services
+
+<div>
+    <h2>Product Component</h2>
+    <button @onclick="AddToBasket">Add to Basket</button>
+</div>
+
+@code {
+
+    [Inject]
+    private BasketService basketService { get; set; }
+
+    public void AddToBasket()
+    {
+        basketService.AddProduct("New product is added");
+    }
+}

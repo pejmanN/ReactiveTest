@@ -1,0 +1,27 @@
+﻿@rendermode InteractiveServer
+<div>
+    <h2>Product Component</h2>
+    <button @onclick="AddToBasket">Add to Basket</button>
+</div>
+
+@code {
+    [Parameter]
+    public Basket BasketComponent { get; set; }
+    private bool isInitialized = false;
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && BasketComponent == null)
+        {
+            isInitialized = true;
+            StateHasChanged();
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    public void AddToBasket()
+    {
+        BasketComponent.AddToBasket("Product added to basket");
+    }
+}

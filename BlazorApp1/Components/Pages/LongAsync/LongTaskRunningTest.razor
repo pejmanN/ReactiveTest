@@ -1,0 +1,33 @@
+﻿@using BlazorApp1.Models
+@page "/longTask"
+
+<h1>Sci-Fi Movie Ratings</h1>
+
+
+@if (!movies.Any())
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <ul>
+        @foreach (var movie in movies)
+        {
+            <li>@movie.Title &mdash; @movie.Rating</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Movie> movies = new List<Movie>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(10000);
+        movies = new List<Movie>
+        {
+            new Movie {Rating ="A", Title ="Frist"},    
+            new Movie {Rating ="B", Title ="Second"},    
+        };
+    }
+}

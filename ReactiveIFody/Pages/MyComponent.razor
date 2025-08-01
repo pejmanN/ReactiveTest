@@ -1,0 +1,34 @@
+﻿@page "/mycomponent"
+@using ReactiveUI.Blazor
+@using ReactiveIFody.ViewModels
+@using System.Reactive.Threading.Tasks
+@inherits ReactiveComponentBase<MyViewModel> 
+@inject MyViewModel ViewModel
+
+@* <EditForm Model="ViewModel">
+    <InputText @bind-Value="ViewModel.Text"  />
+</EditForm> *@
+
+<input type="text" @bind="ViewModel.Text" @bind:event="oninput"/>
+<p >@ViewModel.DisplayText</p>
+
+
+
+<button class="btn btn-info"
+        disabled="@(!ViewModel.CanClear)"
+        @onclick="Clear">
+    Clear
+</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ViewModel = new MyViewModel();
+    }
+
+    public void Clear()
+    {
+        ViewModel.Clear.Execute().ToTask(); 
+    }
+}

@@ -1,0 +1,28 @@
+﻿@using BasketUserObservable.Services
+<div>
+    <h2>Basket Component</h2>
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</div>
+
+@code {
+
+    
+    [Inject]
+    private BasketService basketService { get; set; }
+
+    private List<string> items = new List<string>();
+
+    protected override void OnInitialized()
+    {
+        basketService.ProductAdded.Subscribe(product =>
+        {
+            items.Add(product);
+            StateHasChanged();
+        });
+    }
+}

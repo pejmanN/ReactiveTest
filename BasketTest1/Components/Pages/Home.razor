@@ -1,0 +1,15 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Home</PageTitle>
+<h1>Parent Component</h1>
+
+<Basket @ref="basket" OnLoaded="HandleBasketLoaded" />
+
+<hr />
+
+<Product BasketComponent="@basket" />
+
+@code {
+    private Basket basket;
+}

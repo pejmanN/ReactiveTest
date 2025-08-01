@@ -1,0 +1,31 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+<h1>Parent Component</h1>
+
+<Basket @ref="basket" OnLoaded="HandleBasketLoaded" />
+
+<hr />
+
+
+
+@if (basketLoaded)
+{
+    <Product BasketComponent="@basket" />
+}
+else
+{
+    <p>Loading...</p> <!-- or any other loading indicator -->
+}
+
+
+@code {
+    private Basket basket;
+    private bool basketLoaded = false;
+
+    private void HandleBasketLoaded()
+    {
+        basketLoaded = true;
+        StateHasChanged(); // Notify Blazor to re-render the component
+    }
+}

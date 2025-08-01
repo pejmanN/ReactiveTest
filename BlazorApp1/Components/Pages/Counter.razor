@@ -1,0 +1,59 @@
+﻿@page "/counter"
+@using System.Reactive.Threading.Tasks
+@using ReactiveUI.Blazor
+@rendermode InteractiveServer
+@inherits ReactiveComponentBase<CounterViewModel>
+@inject CounterViewModel Vm
+
+<h3>ReactiveUI.Blazor Counter Example</h3>
+
+@if (ViewModel != null)
+{
+    <p>Message: @ViewModel.Message</p>
+    <p>Count: @ViewModel.Count</p>
+
+    <button @onclick="() => Increment()">Increment</button>
+
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <input id="searchText"
+                   type="text"
+                   class="form-control"
+                   placeholder="Search the interwebs"
+                   @bind-value="ViewModel.SearchText"
+                   @bind-value:event="oninput" />
+
+            <button class="btn btn-info"
+                    disabled="@(!ViewModel.CanClear)"
+                    @onclick="Clear">
+                Clear
+            </button>
+
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel = Vm;
+        base.OnInitialized();
+    }
+    private void Increment()
+    {
+        if (ViewModel != null)
+        {
+
+            ViewModel.IncrementCommand.Execute();
+        }
+    }
+
+    private async Task Clear() => await ViewModel.Clear.Execute().ToTask();
+}

@@ -1,0 +1,42 @@
+﻿<h3>show TwowayBinding in two properties, one with REactive attribute and one without it</h3>
+
+@page "/two-waybinding"
+@using BlazorApp1.ViewModels
+@inherits ReactiveComponentBase<MyViewModel>
+@inject MyViewModel Vm
+@rendermode InteractiveServer
+
+
+<div>
+    <label>Reactive Property:</label>
+    <input value="@ViewModel.ReactiveProperty" />
+    <p>Value: @ViewModel.ReactiveProperty</p>
+</div>
+
+<div>
+    <label>Non-Reactive Property:</label>
+    @* <input @bind="@ViewModel.NonReactiveProperty" /> *@
+    <input value="@ViewModel.NonReactiveProperty" />
+    <p>Value: @ViewModel.NonReactiveProperty</p>
+</div>
+
+<button @onclick="UpdateProperties">Update Properties</button>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel = Vm;
+        base.OnInitialized();
+    }
+
+
+    private void UpdateProperties()
+    {
+        if (ViewModel != null)
+        {
+            ViewModel.ReactiveProperty = "Updated Reactive Value"; // Automatically updates UI
+            ViewModel.NonReactiveProperty = "Updated Non-Reactive Value"; // Does not automatically update UI
+        }
+    }
+}
+

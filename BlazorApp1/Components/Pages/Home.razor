@@ -1,0 +1,75 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+
+<input @onchange="InputChanged" />
+<p>@message</p>
+
+<br />
+<hr />
+
+<div>
+    <label>Non-Reactive Property:</label>
+
+    <input value="@NonReactiveProperty" />
+    <p>Value: @NonReactiveProperty</p>
+</div>
+
+<br /><hr />
+<div>
+    <label>Non-Reactive two-way bining Property:</label>
+
+    <input @bind="@TwoWayBinding" />
+    <p>Value: @TwoWayBinding</p>
+</div>
+
+<button @onclick="UpdateProperties">Update Properties</button>
+
+@code {
+
+    string message = "";
+    string _nonReactiveProperty = "";
+
+    public string TwoWayBinding { get; set; }
+
+
+    public string NonReactiveProperty
+    {
+        get
+        {
+            return _nonReactiveProperty;
+        }
+        set
+        {
+            _nonReactiveProperty = value;
+            //this.RaiseAndSetIfChanged(ref _count, value);
+            System.Diagnostics.Debug.WriteLine($"NonReactiveProperty property changed. New value: {value}");
+        }
+    }
+
+    void InputChanged(ChangeEventArgs e)
+    {
+        message = (string)e.Value;
+    }
+
+    private void UpdateProperties()
+    {
+        NonReactiveProperty = "Updated Non-Reactive Value"; // Does not automatically update UI
+        TwoWayBinding = "Updated Non-Reactive Value"; // Does not automatically update UI
+        base.StateHasChanged();
+
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+}

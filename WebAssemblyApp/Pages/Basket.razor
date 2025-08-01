@@ -1,0 +1,32 @@
+﻿<div>
+    <h2>Basket Component</h2>
+    <ul>
+        @foreach (var item in items)
+        {
+            <li>@item</li>
+        }
+    </ul>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback OnLoaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate loading data...
+        await Task.Delay(2000); // Example: Simulate 2 seconds delay
+
+        // Notify parent component that Basket is loaded
+        await OnLoaded.InvokeAsync();
+    }
+
+    private List<string> items = new List<string>();
+
+    public void AddToBasket(string product)
+    {
+        items.Add(product);
+        StateHasChanged();
+    }
+}
