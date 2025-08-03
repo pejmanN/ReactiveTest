@@ -42,6 +42,13 @@ namespace TestReactiveUI2.ViewModels
             _weatherUpdates
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Subscribe(UpdateWeatherData);
+
+
+            //Observable
+            // .Interval(TimeSpan.FromSeconds(3))
+            // .Select(_ => GenerateWeatherData())
+            // .ObserveOn(RxApp.MainThreadScheduler)
+            // .Subscribe(UpdateWeatherData);
         }
 
         private string GenerateWeatherData()

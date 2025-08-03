@@ -1,0 +1,48 @@
+﻿@page "/mycomponent2"
+@using System.Reactive.Disposables
+@using TestReactiveUI2.ViewModels
+@using System.Reactive.Threading.Tasks
+@inherits ReactiveComponentBase<MyViewModel2>
+@inject MyViewModel2 _ViewModel
+@implements IDisposable
+
+
+
+<h3>Status Update</h3>
+ViewModel.Status1
+<p>@ViewModel.Status</p>
+
+<br />
+ViewModel.Status1
+
+<p>@ViewModel.Status2</p>
+
+@code {
+    private readonly CompositeDisposable _disposables = new();
+    protected override void OnInitialized()
+    {
+        // ViewModel = new MyViewModel2();
+        ViewModel = _ViewModel;
+
+        ViewModel.WhenAnyValue(x => x.Status)
+           .Subscribe(
+               // Next
+               _ => InvokeAsync(StateHasChanged),
+               // Error
+               ex => Console.WriteLine($"Error: {ex.Message}"),
+               // Completed
+               () => Console.WriteLine("Completed")
+           )
+           .DisposeWith(_disposables);
+
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        _disposables?.Dispose();
+        base.Dispose();
+    }
+
+}
