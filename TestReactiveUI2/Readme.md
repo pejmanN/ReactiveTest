@@ -19,7 +19,7 @@
 
 
 
-***NOTE => *** Its very important to know every viewModel on Razor can be injected with 2 approaches:
+***NOTE*** => *** Its very important to know every viewModel on Razor can be injected with 2 approaches:
 1) Just initilizing in 
 ```
 protected override void OnInitialized()
@@ -38,6 +38,8 @@ and then Register it on Program.cs
 builder.Services.AddSingleton<MyViewModel2>();
 ```
 
+***NOTE*** => *** U have dispose any subscriber, either in Razor or ViewModel, otherwise when u even change the page
+the subscribe still remain and listen to stream, and it is not performant
 
 # Weather Component
 ```
@@ -77,6 +79,11 @@ Thepiplie is like:
 User Action → Set Temperature → RaiseAndSetIfChanged → Update _temperature → Notify UI → UI Updates
 
 ```
+
+and in the weather.razor related file we use`ReactiveComponentBase<T>`, 
+`ReactiveComponentBase<T>` is a special base class provided by ReactiveUI.Blazor that automatically handles
+the connection between ReactiveUI's property changes and Blazor's UI updates
+
 
 in the weather component if u do:
 ```
@@ -510,17 +517,19 @@ this.WhenAnyValue(x => x.SearchTerm)
 
 ```
 
-# My Component2
+# MyComponent2
+
+***NOTE=>*** In this Component, it handle proper way to implement `Disposable` pattern for Subsribers.
 
 `ObservableAsPropertyHelper` is related to`ReactiveUI.Blazor`
 
-I define Status ObservableAsPropertyHelper and Status2 with RaiseAndSetIfChanged, i tried to utilize both approach
-to see diffence.
+I define Status ObservableAsPropertyHelper and Status2 with RaiseAndSetIfChanged,the diffence:
 
 in the `RaiseAndSetIfChanged`:
   1-You  want to manually set property. good fro Setting values from service callbacks, etc.
   2-ReactiveUI only handles notifying the UI, so u dont need to call `StateHasChanged` directly
   3- Mutable property that you can set from anywhere so its good for Two-way binding capable (can be both read and written to)
+  4- Ui automatically  get updated so u dont have to use `ViewModel.WhenAnyValue(...)` and call `StateHasChanged`
 
 
 
@@ -528,11 +537,12 @@ in the `ObservableAsPropertyHelper`:
   1-The property is derived from another observable source.You don’t want to manually set it..
   2-You want to  keep the UI in sync with a stream
   3- Read-only property so its good for One-way binding (can only be read)
+  4- Ui automatically does not get updated so u have to use `ViewModel.WhenAnyValue(...)` and call `StateHasChanged`
 
 
 
 
-U can change :
+***NOTE=>*** In the case of using `ObservableAsPropertyHelper` u can handle `StateHasChanged` (to update UI) in following ways :
 ```
 ViewModel.WhenAnyValue(x => x.Status)
     .Subscribe(_ => InvokeAsync(StateHasChanged)); 
@@ -562,6 +572,60 @@ ViewModel.WhenAnyValue(x => x.Status)
            )
            .DisposeWith(_disposables);
 ```
+
+***NOTE=>*** We have two differnts notify approach `RaiseAndSetIfChanged` and `RaisePropertyChanged`, that can be impelemnted like:
+```
+private string _status2;
+		public string Status2
+		{
+			get => _status2;
+			set => this.RaiseAndSetIfChanged(ref _status2, value);
+		}
+
+
+		private string _status3;
+		public string Status3
+		{
+			get => _status3;
+			set
+			{
+				_status3 = value;
+				this.RaisePropertyChanged(nameof(Status3));
+			}
+		}
+```
+But they are working slightly differnt:
+
+`RaiseAndSetIfChanged` is a special ReactiveUI method that's specifically designed to work with `ReactiveComponentBase` and ReactiveUI's property change tracking system. It does several things in one call:
+1. Sets the value
+2. Raises the property changed notification in a way that ReactiveUI components can track
+3. Ensures proper integration with ReactiveUI's reactive property system
+
+`RaisePropertyChanged` is just raising a standard `INotifyPropertyChanged` event, which isn't automatically 
+hooked into ReactiveUI's reactive property system. so we need to `WhenAnyValue` to update the UI.
+
+
+
+***NOTE=>*** we have `.BaindTo(...)` method :
+
+    - One-way binding only (source → target)
+    - Used primarily between view model properties
+    - Does NOT handle two-way binding between Razor view and ViewModel
+
+
+if u pay attention i have Status2 whch use `Subscribe` and Status4 which use `BinadTo`, they are almost the same
+but with some differnces:
+
+Does exactly the ***same thing***, but:
+
+>1) In `Subscribe` You must manually manage the subscription, but its not like this in `Bindto(..)`
+
+>2) If you forget to dispose `Subscribe` (especially in long-running components), you'll have a memory leak or background updates even when the component is inactive.
+
+>3) `Subscribe` is more Impretive  so u have more control to do some customize things.and `BindTo` is not.
+
+
+
 
 
 

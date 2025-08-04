@@ -12,10 +12,21 @@
 ViewModel.Status1
 <p>@ViewModel.Status</p>
 
-<br />
-ViewModel.Status1
 
+<br />
+ViewModel.Status2
 <p>@ViewModel.Status2</p>
+
+
+<br />
+ViewModel.Status3
+<p>@ViewModel.Status3</p>
+
+
+<br />
+ViewModel.Status4
+<p>@ViewModel.Status4</p>
+
 
 @code {
     private readonly CompositeDisposable _disposables = new();
@@ -42,6 +53,7 @@ ViewModel.Status1
     public void Dispose()
     {
         _disposables?.Dispose();
+        ViewModel.Dispose();
         base.Dispose();
     }
 
