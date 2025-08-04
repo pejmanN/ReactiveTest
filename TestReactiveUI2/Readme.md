@@ -514,6 +514,24 @@ this.WhenAnyValue(x => x.SearchTerm)
 
 `ObservableAsPropertyHelper` is related to`ReactiveUI.Blazor`
 
+I define Status ObservableAsPropertyHelper and Status2 with RaiseAndSetIfChanged, i tried to utilize both approach
+to see diffence.
+
+in the `RaiseAndSetIfChanged`:
+  1-You  want to manually set property. good fro Setting values from service callbacks, etc.
+  2-ReactiveUI only handles notifying the UI, so u dont need to call `StateHasChanged` directly
+  3- Mutable property that you can set from anywhere so its good for Two-way binding capable (can be both read and written to)
+
+
+
+in the `ObservableAsPropertyHelper`:
+  1-The property is derived from another observable source.You don’t want to manually set it..
+  2-You want to  keep the UI in sync with a stream
+  3- Read-only property so its good for One-way binding (can only be read)
+
+
+
+
 U can change :
 ```
 ViewModel.WhenAnyValue(x => x.Status)
