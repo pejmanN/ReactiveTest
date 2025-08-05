@@ -1,0 +1,55 @@
+﻿@page "/ordercomponent"
+@using ReactiveUI
+@using ReactiveUI.Blazor
+@using ReactiveIFody.ViewModels
+@using System.Reactive.Threading.Tasks
+@using System.Reactive.Disposables
+@inherits ReactiveComponentBase<OrderViewModel>
+@inject OrderViewModel _viewModel
+@implements IDisposable
+
+
+
+ViewModel.TaxRate
+<input type="text"
+       @bind-value="ViewModel.TaxRate"
+       @bind-value:event="oninput" />
+
+<br />
+
+ViewModel.SubTotal
+<input type="text"
+       @bind-value="ViewModel.SubTotal"
+       @bind-value:event="oninput" />
+
+
+<br />
+Total
+<p>@ViewModel.Total</p>
+
+
+
+@code {
+    private readonly CompositeDisposable _disposables = new();
+    protected override void OnInitialized()
+    {
+        ViewModel = _viewModel;
+
+        ViewModel.WhenAnyValue(x => x.Total)
+           .Subscribe(
+               _ => InvokeAsync(StateHasChanged),// Next
+               ex => Console.WriteLine($"Error: {ex.Message}"), // Error
+               () => Console.WriteLine("Completed") // Completed
+           )
+           .DisposeWith(_disposables);
+
+        base.OnInitialized();
+    }
+
+    public void Dispose()
+    {
+        _disposables?.Dispose();
+        base.Dispose();
+    }
+
+}
