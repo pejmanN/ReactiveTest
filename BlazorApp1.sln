@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestReactiveUI2", "TestReac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveIFody", "ReactiveIFody\ReactiveIFody.csproj", "{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveAndFodyTst.Client", "ReactiveAndFodyTst.Client\ReactiveAndFodyTst.Client.csproj", "{11817E06-6C20-4552-A221-AB0680A7AD87}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11817E06-6C20-4552-A221-AB0680A7AD87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11817E06-6C20-4552-A221-AB0680A7AD87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11817E06-6C20-4552-A221-AB0680A7AD87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11817E06-6C20-4552-A221-AB0680A7AD87}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{C9288473-2D6A-4312-8C76-5587F104B40C} = {745C0F57-5878-4105-8D51-0C3069E368E4}
 		{E05FFAF4-0695-45B5-9629-29CA19839850} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
 		{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
+		{11817E06-6C20-4552-A221-AB0680A7AD87} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F249690-6CB5-40BA-98B9-5BEBCF100913}
