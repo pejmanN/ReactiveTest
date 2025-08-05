@@ -1,0 +1,30 @@
+﻿@page "/products"
+@using ReactiveAndFodyTst.Client.ViewModels
+@using ReactiveUI.Blazor
+@inherits ReactiveComponentBase<ProductsViewModel>
+@inject ProductsViewModel ViewModel
+
+<h3>Products</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewModel.Products != null)
+        {
+            @foreach (var product in ViewModel.Products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("C")</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

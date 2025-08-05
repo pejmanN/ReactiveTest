@@ -442,6 +442,27 @@ The important points:
 4. Each time a new boolean arrives, ReactiveCommand updates its executable state
 
 
+***NOTE =>*** In this expample we triggered Command according to an value change event, i mean:
+```
+  this.WhenAnyValue(x => x.SearchTerm)
+            .Do(x => Console.WriteLine($"1. Value changed to: {x}"))
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Do(x => Console.WriteLine($"2. Non-empty value: {x}"))
+            .Throttle(TimeSpan.FromMilliseconds(4000))
+            .Do(x => Console.WriteLine($"3. After throttle: {x}"))
+            .InvokeCommand(SearchCommand); // Triggering the Command
+```
+so also it can be triggerd by other events like a buttonClick on UI, and also we use `Subscription` to
+use the result of command:
+```
+    SearchCommand.Subscribe(results => SearchResults = results);
+
+```
+It gives us more flexibility to do differnt thing with the result of command, otherwise it could easily set
+`SearchResults` in the command, so it does not need to do subscription.
+
+U can check example in `ReactiveAndFodyTst.Client`
+
 #### WhenAnyValue
 It checkes if the given Poperty's value is changed or not, if change so it run the given pipleline.
 1) when u susbcribe if the value is chnage it will run, so if it gets the same value it does not run the pipline
