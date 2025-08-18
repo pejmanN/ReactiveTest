@@ -28,6 +28,17 @@ Total
 <p>@ViewModel.Total</p>
 
 
+<hr />
+<br />
+
+<input type="checkbox"
+       @bind-value="ViewModel.IsChecked"
+       @bind-value:event="onchange" />
+<br />
+<span>Checkbox state: @ViewModel.ShowCheckboxIsChecked</span>
+
+
+
 
 @code {
     private readonly CompositeDisposable _disposables = new();

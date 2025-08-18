@@ -174,12 +174,12 @@ If u dont want to refrence `_weatherUpdates` in other code,  or expose it , u ca
     .ObserveOn(RxApp.MainThreadScheduler)
     .Subscribe(UpdateWeatherData);
 ```
-
+***Final Point =>*** when value of a property like `Temperature` is changes, it will raise `RaiseAndSetIfChanged` , since our `razor`
+is inherited from `ReactiveComponentBase<T>` and `ReactiveComponentBase<T>` wires itself to the `INotifyPropertyChanged` of the 
+ViewModel and, when it sees a change, it schedules a re-render by calling Blazor’s render pipeline
+(effectively InvokeAsync(StateHasChanged)). That’s how the markup using @ViewModel.Temperature gets refreshed.
 
 # Search Component
-
-
-
 
 in the Rezor:
 - ✅ `@bind-value`: Blazor framework feature
@@ -644,6 +644,10 @@ Does exactly the ***same thing***, but:
 >2) If you forget to dispose `Subscribe` (especially in long-running components), you'll have a memory leak or background updates even when the component is inactive.
 
 >3) `Subscribe` is more Impretive  so u have more control to do some customize things.and `BindTo` is not.
+ 
+>4) `BindTo` automatically observes on `RxApp.MainThreadScheduler` so the assignment is UI-safe, but `Subscribe` you mustdo it by urself.
+ 
+>5)
 
 
 
