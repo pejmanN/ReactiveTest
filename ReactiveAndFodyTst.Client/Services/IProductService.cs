@@ -6,6 +6,7 @@ namespace ReactiveAndFodyTst.Client.Services
     {
         IObservable<List<Product>> Products { get; }
         void AddProduct(Product product);
-
+        Product GetById(Guid id);
+        void UpdateProduct(Product product);
     }
 }

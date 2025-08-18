@@ -2,7 +2,7 @@
 @using ReactiveAndFodyTst.Client.ViewModels
 @using ReactiveUI.Blazor
 @inherits ReactiveComponentBase<ProductsViewModel>
-@inject ProductsViewModel ViewModel
+@inject ProductsViewModel _viewModel
 
 <h3>Products</h3>
 
@@ -28,3 +28,11 @@
         }
     </tbody>
 </table>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel ??= _viewModel;
+    }
+
+}

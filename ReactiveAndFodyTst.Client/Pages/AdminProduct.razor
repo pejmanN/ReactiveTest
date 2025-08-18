@@ -1,8 +1,9 @@
 ﻿@page "/admin-product"
 @using ReactiveAndFodyTst.Client.ViewModels
 @using ReactiveUI.Blazor
+@using System.Reactive.Linq
 @inherits ReactiveComponentBase<AdminProductViewModel>
-@inject AdminProductViewModel ViewModel
+@inject AdminProductViewModel _viewModel
 
 <h3>Add New Product</h3>
 
@@ -24,7 +25,12 @@
         </div>
 
         <div class="mt-3">
-            <button class="btn btn-primary" @onclick="@(() => ViewModel.AddCommand.Execute().Subscribe())">Add</button>
+            @* <button class="btn btn-primary" @onclick="@(() => ViewModel.AddCommand.Execute().Subscribe())">Add New Product</button> *@
+            <button class="btn btn-primary"
+                    @onclick="@OnAddClicked"
+                    disabled="@(!ViewModel.AddCommand.CanExecute.FirstAsync().Wait())">
+                Add
+            </button>
             <button class="btn btn-secondary" @onclick="@(() => ViewModel.ClearCommand.Execute().Subscribe())">Clear</button>
         </div>
     </div>
@@ -48,8 +54,32 @@
                     <td>@product.Name</td>
                     <td>@product.Description</td>
                     <td>@product.Price.ToString("C")</td>
+                    <td>
+                        <a href="/adminproduct/edit/@product.Id" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+
                 </tr>
             }
         }
     </tbody>
 </table>
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel ??= _viewModel;
+    }
+
+    private async Task OnAddClicked()
+    {
+        var canExecute = await _viewModel.AddCommand.CanExecute.FirstAsync();
+        if (canExecute)
+        {
+            await _viewModel.AddCommand.Execute();
+        }
+    }
+
+}
+
