@@ -1,0 +1,49 @@
+﻿@page "/product-search"
+@using ReactiveUI.Blazor
+@using ReactiveAndFodyTst.Client.ViewModels
+@inject ProductSearchViewModel _viewModel
+@inherits ReactiveComponentBase<ProductSearchViewModel>
+
+<h3>Search Products</h3>
+
+<div class="mb-3">
+    <input class="form-control"
+           placeholder="Type to search by name or description..."
+            @bind-value:event="oninput"
+            @bind-value="ViewModel.SearchText" />
+</div>
+
+@if (ViewModel.Filtered is null || ViewModel.Filtered.Count == 0)
+{
+    <p>No products found.</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:30%">Name</th>
+                <th style="width:50%">Description</th>
+                <th style="width:20%; text-align:right">Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in ViewModel.Filtered)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Description</td>
+                    <td style="text-align:right">@p.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel = _viewModel; // wire the injected VM to the ReactiveComponentBase
+        base.OnInitialized();
+    }
+}

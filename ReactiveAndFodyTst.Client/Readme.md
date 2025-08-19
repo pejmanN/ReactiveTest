@@ -26,7 +26,7 @@ the use Add new product, so we write validator using FluentValidation, then writ
 
             AddCommand = ReactiveCommand.Create(ExecuteAdd, canAdd);
 ```
-As u know at the first the compoent is loaded the `AddCommand` will subsctribe to `canAdd`, so as u load the component 
+As u know at the first time that the compoent is loaded the `AddCommand` will subsctribe to `canAdd`, so as u load the component 
 u can see in `output` following logs:
 ```
 Properties changed: Name=, Price=0
@@ -79,3 +79,52 @@ check if `canExecute` is `True`.
 
 > So Its Really Important That Check If Different Method in a Framework or Differnt Frameworks to EachOther
 They Respect About Their Feature or Events or Not.
+
+
+#### ObservableCollection
+ObservableCollection in a nutshell 
+- It’s a collection type from System.Collections.ObjectModel designed for data binding.
+- It implements:
+    - INotifyCollectionChanged: raises CollectionChanged when items are added, removed, moved, replaced, or when the list is reset.
+    - INotifyPropertyChanged: raises PropertyChanged for Count and the indexer when the collection changes.
+
+- UIs (WPF/WinUI/etc.) listen to those events to automatically refresh the view when the collection changes.
+- It is not thread-safe; you must modify it on the UI thread.
+
+Why use it here
+- Local, UI-friendly cache: _products holds the current products in memory. Because it’s an ObservableCollection, any structural change can be observed reactively.
+- Integration with DynamicData: _products.ToObservableChangeSet(p => p.Id) converts collection change notifications into a dynamic “change set” stream keyed by Id. From there:
+    - ToCollection() materializes snapshots (IReadOnlyCollection ) whenever the collection changes. 
+    - Those snapshots are combined with your ProjectionFunction to produce Filtered.
+
+- Safe threading: The code calls ObserveOn(RxApp.MainThreadScheduler) before clearing/adding items to ensure all mutations happen on the UI thread (required by ObservableCollection).
+- Batched updates: AddRange(list) (extension from DynamicData.Binding) batches additions so the UI receives fewer, larger notifications instead of one per item, improving performance.
+
+What it does and doesn’t notify
+- It notifies about structural changes (add/remove/clear/replace/reset).
+- It does not automatically notify when a property on an item changes. For that:
+    - Each Product should implement INotifyPropertyChanged so bindings to Product properties update.
+    - If you need the filtering pipeline to react to item property changes, you’d either re-emit from the service or use DynamicData operators like AutoRefresh on the change set.
+
+Contrast with other collections
+- List : No change notifications; the UI won’t update automatically. 
+- ReadOnlyObservableCollection : Read-only wrapper suitable for exposing to the UI while mutating an underlying observable collection. 
+- DynamicData sources (SourceList/SourceCache): Better for high-frequency/large datasets; produce change sets directly and can be bound to a ReadOnlyObservableCollection for the UI. They’re often preferred for more complex scenarios.
+
+Tiny example of notifications
+``` csharp
+// C#
+var coll = new ObservableCollection<string>();
+coll.CollectionChanged += (s, e) =>
+{
+    // e.Action tells you Add/Remove/Reset/etc.
+    // e.NewItems / e.OldItems provide the changed items
+};
+coll.Add("A");   // raises CollectionChanged(Add), PropertyChanged(Count)
+coll.Clear();    // raises CollectionChanged(Reset), PropertyChanged(Count)
+```
+Bottom line
+- ObservableCollection is used here as a UI-friendly, observable local cache. 
+- DynamicData listens to it, converts changes to a change set, materializes snapshots, and those snapshots are then filtered by the latest ProjectionFunction to produce the final Filtered result.
+product
+product

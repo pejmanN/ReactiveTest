@@ -16,6 +16,7 @@ builder.Services.AddScoped<IValidator<Product>, ProductValidator>();
 builder.Services.AddScoped<AdminProductViewModel>();
 builder.Services.AddScoped<ProductsViewModel>();
 builder.Services.AddScoped<ProductEditViewModel>();
+builder.Services.AddScoped<ProductSearchViewModel>();
 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });

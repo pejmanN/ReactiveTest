@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /TestReactiveUI2/.idea/vcs.xml
 /ReactiveAndFodyTst.Client/.idea
+/.idea
