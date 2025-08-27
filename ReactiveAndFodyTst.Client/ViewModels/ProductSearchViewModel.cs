@@ -48,7 +48,7 @@ namespace ReactiveAndFodyTst.Client.ViewModels
                 {
                     _products.Clear();
                     //foreach (var p in list)
-                        _products.AddRange(list);
+                    _products.AddRange(list);
                 })
                 .DisposeWith(_disposables);
 
@@ -62,9 +62,9 @@ namespace ReactiveAndFodyTst.Client.ViewModels
                 .Throttle(TimeSpan.FromMilliseconds(250), RxApp.TaskpoolScheduler)
                 .DistinctUntilChanged() //- DistinctUntilChanged ensures identical consecutive terms don’t reprocess.
 
-    //            * That stabilized term is transformed into a function:
-    //             -If the term is empty / whitespace, the function returns the input items unchanged(identity).
-    //             - Otherwise, the function returns only items whose Name or Description contains the term(case‑insensitive).
+                //            * That stabilized term is transformed into a function:
+                //             -If the term is empty / whitespace, the function returns the input items unchanged(identity).
+                //             - Otherwise, the function returns only items whose Name or Description contains the term(case‑insensitive).
                 .Select(term => (Func<IReadOnlyCollection<Product>, IReadOnlyCollection<Product>>)(items =>
                 {
                     if (string.IsNullOrWhiteSpace(term))
@@ -83,33 +83,58 @@ namespace ReactiveAndFodyTst.Client.ViewModels
 
 
 
-            // Combine the latest projection function with a change set created from the ObservableCollection
-            // ToObservableChangeSet: observe changes of the in-memory collection (keyed by Id)
-            // ToCollection: materialize it to a bindable IReadOnlyCollection<Product>
+            //// Combine the latest projection function with a change set created from the ObservableCollection
+            //// ToObservableChangeSet: observe changes of the in-memory collection (keyed by Id)
+            //// ToCollection: materialize it to a bindable IReadOnlyCollection<Product>
 
-            // CombineLatest: it pairs the latest value from A with the latest value from B, so in our case it pairs the projection function with the latest collection,
-            //-CombineLatest pairs the latest value from A with the latest value from B:
-            //    -Important: CombineLatest does not emit until both A and B have produced at least one value.
-            //    -After the first emission, any new value from A is immediately paired with “the latest B,” and any new value from B is paired with “the latest A.”
-            //    -It always emits a tuple containing “the latest from both,” even if only one source just changed.
+            //// CombineLatest: it pairs the latest value from A with the latest value from B, so in our case it pairs the projection function with the latest collection,
+            ////-CombineLatest pairs the latest value from A with the latest value from B:
+            ////    -Important: CombineLatest does not emit until both A and B have produced at least one value.
+            ////    -After the first emission, any new value from A is immediately paired with “the latest B,” and any new value from B is paired with “the latest A.”
+            ////    -It always emits a tuple containing “the latest from both,” even if only one source just changed.
 
-            // Switch: ensure we only publish the most recent result if updates come fast
+            //// Switch: ensure we only publish the most recent result if updates come fast
+            //this.WhenAnyValue(vm => vm.ProjectionFunction)
+            //    .WhereNotNull()
+            //    .CombineLatest(
+            //        _products
+            //            .ToObservableChangeSet(p => p.Id)
+            //            .ToCollection()
+            //    )
+            //    //At this point because of CombineLatest, we have a pair, First is the latest projection-function, second is the latest productList
+            //    // Turn the pair into an inner observable to demonstrate Switch (and avoid stale emissions)
+            //    .Select(pair => Observable.Return(pair.First.Invoke(pair.Second)))
+
+            //    //-It’s there as a safety / future‑proofing pattern: if projection later becomes asynchronous or long‑running, Switch prevents stale results from earlier computations overriding newer ones.
+            //    .Switch()
+            //.ObserveOn(RxApp.MainThreadScheduler)
+            //    .ToPropertyEx(this, vm => vm.Filtered)
+            //    .DisposeWith(_disposables);
+
+
+            //Second verson of above, i tried to write it debuggable
             this.WhenAnyValue(vm => vm.ProjectionFunction)
-                .WhereNotNull()
-                .CombineLatest(
-                    _products
-                        .ToObservableChangeSet(p => p.Id)
-                        .ToCollection()
-                )
-                //At this point because of CombineLatest, we have a pair, First is the latest projection-function, second is the latest productList
-                // Turn the pair into an inner observable to demonstrate Switch (and avoid stale emissions)
-                .Select(pair => Observable.Return(pair.First.Invoke(pair.Second)))
+               .WhereNotNull()
+               .CombineLatest(
+                   _products.ToObservableChangeSet(p => p.Id).ToCollection(), (proj, items) =>
+                       {
+                          if (Debugger.IsAttached) Debugger.Break(); // breakpoint for CombineLatest emissions
+                           var t = proj;
+                           var t2 = items;
+                           return (proj, items);
+                       })
 
-                //-It’s there as a safety / future‑proofing pattern: if projection later becomes asynchronous or long‑running, Switch prevents stale results from earlier computations overriding newer ones.
-                .Switch()
-            .ObserveOn(RxApp.MainThreadScheduler)
-                .ToPropertyEx(this, vm => vm.Filtered)
-                .DisposeWith(_disposables);
+               .Select(pair =>
+               {
+                   if (Debugger.IsAttached) Debugger.Break(); // breakpoint for Select
+                   var result = pair.proj(pair.items);
+                   return Observable.Return(result);
+               })
+
+               .Switch()
+           .ObserveOn(RxApp.MainThreadScheduler)
+               .ToPropertyEx(this, vm => vm.Filtered)
+               .DisposeWith(_disposables);
         }
 
         public void Dispose() => _disposables.Dispose();

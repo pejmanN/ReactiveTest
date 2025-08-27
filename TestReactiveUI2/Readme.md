@@ -647,7 +647,84 @@ Does exactly the ***same thing***, but:
  
 >4) `BindTo` automatically observes on `RxApp.MainThreadScheduler` so the assignment is UI-safe, but `Subscribe` you mustdo it by urself.
  
->5)
+ -------
+ ### NEW 08/26/2025
+ I was going to do change on `SearchCommand` to change it according to `addPostfixToSearch` checkbox, it check
+ if the value of `AddPostfixToSearch` is changed, the run follwoing pipleine:
+ ```
+  this.WhenAnyValue(x => x.AddPostfixToSearch)
+                .Select(SearchCommandDispatcher)
+               .Do(command =>
+               {
+                   _cd?.Dispose();
+                   SearchCommand = command;
+               })
+                 .Subscribe(x => { _cd = SearchCommand?.Subscribe(results => SearchResults = results); });
+ ```
+ so when the following pipleine get triggered the latest version of `SearchCommand` will be executed:
+ ```
+   this.WhenAnyValue(x => x.SearchTerm)
+            .Do(x => Console.WriteLine($"1. Value changed to: {x}"))
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Do(x => Console.WriteLine($"2. Non-empty value: {x}"))
+            //.Throttle(TimeSpan.FromMilliseconds(400))
+            .Do(x => Console.WriteLine($"3. After throttle: {x}"))
+           .InvokeCommand(this, x => x.SearchCommand);
+ ```
+
+ very important point here is that we could triggered  SearchCommand using 2 approached:
+ ```
+    .InvokeCommand(this, x => x.SearchCommand);
+```
+and
+```
+    .InvokeCommand(SearchCommand);
+
+```
+the differnces:
+1. Original: `.InvokeCommand(this, x => x.SearchCommand)`
+    - This uses the overload of `InvokeCommand` that takes the current object instance (`this`) and a property selector lambda expression (`x => x.SearchCommand`)
+    - It resolves the command from the instance at execution time
+    - If `SearchCommand` changes after this chain is set up, it will use the updated command
+
+2. Your proposed change: `.InvokeCommand(SearchCommand)`
+    - This uses the overload of `InvokeCommand` that takes a direct reference to a command
+    - It captures the current value of `SearchCommand` at the time this line executes
+    - If `SearchCommand` changes later, this chain would still use the original command reference
+
+so when we are going to use the changed version of `SearchCommand` we have to use the first approach.
+
+the other important thing is that `SearchCommand` should raise changed-event `RaiseAndSetIfChanged`, 
+since the  `.InvokeCommand(this, x => x.SearchCommand)` under the hood is listeing to changess to `SearchCommand`
+thing of it like `WhenAnyValue(x => x.SearchCommand)`
+
+the other important point is, when u are going to change the `SearchCommand` if it has already subscribers, like
+```
+     SearchCommand?.Subscribe(results => SearchResults = results);
+
+```
+so it does not let the chaged affected the result, u have 2 options to solve it:
+1) set `SearchResults` inside of command and remove above subscribtion, like:
+ ```
+  //var data = await PerformSearch(term);
+//SearchResults = data.Select(x => new SearchResult { Title = x.Title + " , Postfix", Description = x.Description });
+//return SearchResults;
+ ```
+ 2) otherwise u need to dispose subscription and set the `SearchCommand` and then again subscribe on it like
+ what i did here (not recommended):
+ ```
+  this.WhenAnyValue(x => x.AddPostfixToSearch)
+                .Select(SearchCommandDispatcher)
+               .Do(command =>
+               {
+                   _cd?.Dispose();  **=======> UNSUBSCRIBE
+                   SearchCommand = command;
+               })
+                 .Subscribe(x => { 
+                    _cd = SearchCommand?.Subscribe(results => SearchResults = results);  **===> SUBSCRIBE AGAIN
+                    });
+ ```
+
 
 
 
