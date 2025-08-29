@@ -1,0 +1,100 @@
+﻿@page "/room"
+@using ReactiveAndFodyTst.Client.ViewModels
+@using ReactiveUI.Blazor
+@using System.Reactive.Linq
+@inherits ReactiveComponentBase<RoomViewModel>
+@inject RoomViewModel _viewModel
+
+<h3>Add New Product</h3>
+
+<div class="card">
+    <div class="card-body">
+        <div class="form-group">
+            <label>RoomCount:</label>
+            <input type="text" class="form-control" @bind-value="ViewModel.RoomCount" @bind-value:event="oninput" />
+        </div>
+
+
+
+
+        @if (ViewModel.RoomList != null)
+        {
+            @foreach (var room in ViewModel.RoomList)
+            {
+                <div class="form-group" style="border:red">
+                    <label>Adultcount:</label>
+                    <input type="text" class="form-control" @bind-value="room.AdultCount" @bind-value:event="oninput" />
+
+                    <label>ChildrenCount:</label>
+                    <input type="text" class="form-control" @bind-value="room.ChildrenCount"
+                           @oninput="@(e => ViewModel.OnChildrenCountChanged(room, e))" />
+                    @foreach (var children in room.ChildrenList)
+                    {
+
+                        <label>children Age:</label>
+                        <input type="text" class="form-control" @bind-value="children.Age" @bind-value:event="oninput" />
+
+                    }
+                </div>
+
+            }
+        }
+
+
+        <div class="mt-3">
+            <button class="btn btn-primary"
+                    @onclick="@Save">
+                Add
+            </button>
+            @* <button class="btn btn-secondary" @onclick="@(() => ViewModel.ClearCommand.Execute().Subscribe())">Clear</button> *@
+        </div>
+    </div>
+</div>
+
+@* <h3 class="mt-4">People List</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ViewModel.ProductList != null)
+        {
+            @foreach (var product in ViewModel.ProductList)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price.ToString("C")</td>
+                    <td>
+                        <a href="/adminproduct/edit/@product.Id" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table> *@
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel ??= _viewModel;
+    }
+
+    private async Task Save()
+    {
+
+        ViewModel.Save();
+    }
+
+
+
+
+}
+

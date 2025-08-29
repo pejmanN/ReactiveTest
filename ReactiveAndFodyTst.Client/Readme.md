@@ -128,3 +128,61 @@ Bottom line
 - DynamicData listens to it, converts changes to a change set, materializes snapshots, and those snapshots are then filtered by the latest ProjectionFunction to produce the final Filtered result.
 product
 product
+
+
+
+
+
+## RoomViewModel
+1) If u have a normal property (without any decoration and attributes) in ur viewmodel like:
+```
+  public int RoomCount { get; set; }
+```
+and in razor:
+```
+<input type="text" class="form-control" @bind-value="ViewModel.RoomCount" @bind-value:event="oninput" />
+```
+***IF*** u change this RoomCount from razor, the RoomCount in viewmodel will be updated, it means if u put number
+in html input, or in `@code {}` in the razor u do something like `ViewModel.RoomCount = 10`, for test create a button
+and call `OnInitialized` for ` @onclick="@OnAddClicked"` event.
+```
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel ??= _viewModel;
+    }
+
+    private async Task OnAddClicked()
+    {
+        ViewModel.RoomCount = 10;
+        // ViewModel.AddRoom();
+    }
+
+}
+```
+
+***IF*** u change this RoomCount from Viewmodel, the razor did not get updated. for test u can create a button like
+above but in the `@code` u have to call method from Viewmodel
+```
+
+@code {
+    protected override void OnInitialized()
+    {
+        ViewModel ??= _viewModel;
+    }
+
+    private async Task OnAddClicked()
+    {
+         ViewModel.AddRoom();
+    }
+}
+```
+and in viewmodel:
+```
+  public void AddRoom()
+        {
+            var t = RoomCount;
+            RoomCount = 3;
+        }
+```
+

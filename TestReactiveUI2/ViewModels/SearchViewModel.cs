@@ -66,7 +66,7 @@ namespace TestReactiveUI2.ViewModels
                .Do(command =>
                {
                    _cd?.Dispose();
-                     = command;
+                   SearchCommand = command;
                })
                  .Subscribe(x => { _cd = SearchCommand?.Subscribe(results => SearchResults = results); });
 
