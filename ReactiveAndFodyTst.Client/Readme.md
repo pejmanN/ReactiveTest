@@ -186,3 +186,57 @@ and in viewmodel:
         }
 ```
 
+***NOTE =>*** There are 2 approached to detecting ChildrentCount changes, 
+1) we used `oninput` like:
+```
+ <input type="text" class="form-control" @bind-value="room.ChildrenCount"
+                           @oninput="@(e => ViewModel.OnChildrenCountChanged(room, e))" />
+```
+which call the `OnChildrenCountChanged` from ViewModel, its working fine.
+
+2) if u are going to use ReactiveFunction, u have to something like following:
+
+in view model
+```
+  this.WhenAnyValue(x => x.RoomCount)
+           .Subscribe(value =>
+           {
+               RoomList.Clear();
+               for (int i = 0; i < this.RoomCount; i++)
+               {
+                   var room = new Room();
+
+                   // Subscribe to ChildrenCount changes for each room
+                   room.WhenAnyValue(x => x.ChildrenCount)
+                       .Subscribe(childrenCount =>
+                       {
+                           room.ChildrenList.Clear();
+                           for (int j = 0; j < childrenCount; j++)
+                           {
+                               room.ChildrenList.Add(new Children());
+                           }
+                       });
+
+                   RoomList.Add(room);
+               }
+           });
+```
+and razor:
+```
+  <label>ChildrenCount:</label>
+  <input type="number" class="form-control" @bind-value="room.ChildrenCount" @bind-value:event="oninput" />
+```
+and define `Room` as `ReactiveObject` like following:
+```
+ public class Room : ReactiveObject
+    {
+        [Reactive] public int AdultCount { get; set; }
+        [Reactive] public int ChildrenCount { get; set; }
+        [Reactive] public List<Children> ChildrenList { get; set; } = new();
+    }
+    public class Children
+    {
+        public int Age { get; set; }
+    }
+```
+
