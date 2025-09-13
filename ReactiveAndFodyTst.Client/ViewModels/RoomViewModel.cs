@@ -7,7 +7,9 @@ namespace ReactiveAndFodyTst.Client.ViewModels
 {
     public class RoomViewModel : ReactiveObject
     {
-        [Reactive] public List<Room> RoomList { get; private set; } = [];
+        public int ChangeFromViewModel { get; set; }
+
+        public List<Room> RoomList { get; private set; } = [];
         [Reactive] public int RoomCount { get; set; }
 
 
@@ -16,6 +18,8 @@ namespace ReactiveAndFodyTst.Client.ViewModels
             this.WhenAnyValue(x => x.RoomCount)
                 .Subscribe(value =>
                 {
+                    ChangeFromViewModel = 4;
+
                     RoomList.Clear();
                     for (int i = 0; i < this.RoomCount; i++)
                     {
@@ -31,6 +35,7 @@ namespace ReactiveAndFodyTst.Client.ViewModels
             if (e.Value is null) return;
             if (int.TryParse(e.Value?.ToString(), out int value))
             {
+                ChangeFromViewModel = 5;
                 room.ChildrenList.Clear();
                 for (int i = 0; i < value; i++)
                 {

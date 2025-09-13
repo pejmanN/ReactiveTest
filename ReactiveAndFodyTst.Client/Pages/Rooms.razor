@@ -7,6 +7,12 @@
 
 <h3>Add New Product</h3>
 
+<div class="form-group">
+    <label>TestChangeFromViewmode:</label>
+    <input type="text" class="form-control" @bind-value="ViewModel.ChangeFromViewModel" @bind-value:event="oninput" />
+</div>
+
+
 <div class="card">
     <div class="card-body">
         <div class="form-group">
@@ -51,35 +57,6 @@
     </div>
 </div>
 
-@* <h3 class="mt-4">People List</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (ViewModel.ProductList != null)
-        {
-            @foreach (var product in ViewModel.ProductList)
-            {
-                <tr>
-                    <td>@product.Name</td>
-                    <td>@product.Description</td>
-                    <td>@product.Price.ToString("C")</td>
-                    <td>
-                        <a href="/adminproduct/edit/@product.Id" class="btn btn-primary">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                    </td>
-
-                </tr>
-            }
-        }
-    </tbody>
-</table> *@
 
 @code {
     protected override void OnInitialized()
