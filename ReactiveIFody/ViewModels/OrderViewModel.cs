@@ -6,8 +6,11 @@ namespace ReactiveIFody.ViewModels
 {
     public class OrderViewModel : ReactiveObject
     {
-
-
+        [Reactive]
+        public string NameTxt { get; set; }
+        /// <summary>
+        /// /////////////////////////////
+        /// </summary>
         [ObservableAsProperty]
         public string ShowCheckboxIsChecked { get; set; }
         [Reactive]
@@ -35,6 +38,7 @@ namespace ReactiveIFody.ViewModels
         public OrderViewModel()
         {
             _total = this.WhenAnyValue(x => x.SubTotal, x => x.TaxRate)
+                .WhereNotNull()
                          .Select(tuple =>
                          {
                              var (subtotal, rate) = tuple;
@@ -50,12 +54,29 @@ namespace ReactiveIFody.ViewModels
 
 
             this.WhenAnyValue(x => x.IsChecked)
+                  .Do(val =>
+                  {
+                      NameTxt = "pejman is change true checkbox" + val;
+                  })
                   .Select(isChecked =>
                   {
                       var res = isChecked ? "Checkbox is checked" : "Checkbox is unchecked";
                       return res;
                   })
                   .ToPropertyEx(this, x => x.ShowCheckboxIsChecked);
+
+
+            this.WhenAnyValue(x => x.NameTxt)
+                 .Do(x =>
+                 {
+                     Console.WriteLine(x);
+                 })
+                 .Skip(1)
+                 .Subscribe(txt =>
+                 {
+                     Console.WriteLine(txt);
+                     // do other side-effects here
+                 });
 
 
         }
