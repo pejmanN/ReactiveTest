@@ -50,3 +50,38 @@ this.WhenAnyValue(x => x.IsChecked)
 contrary to `Total` i used `ToPropertyEx` instead of `ToProperty`, `ToPropertyEx` is Fody Helper, which help us 
 to update the ui without to write `ViewModel.WhenAnyValue` on `razor`, which we have to do for `Total` to 
 update the UI `ViewModel.WhenAnyValue(x => x.Total) ....` in Razor.
+
+
+**ImportanPoint**
+
+I Added `NameTxt` as Reactive to check the concept, if i can change a Reactive prperty in `ViewModel` and in the 
+same time listen to its change on `ViewModel` and trigger a pipeline or not, so the answer is `yes`,
+I change `NameTxt` in 
+```
+  this.WhenAnyValue(x => x.IsChecked)
+                  .Do(val =>
+                  {
+                      NameTxt = "pejman is change true checkbox" + val;
+                  })
+                  .Select(isChecked =>
+                  {
+                      var res = isChecked ? "Checkbox is checked" : "Checkbox is unchecked";
+                      return res;
+                  })
+                  .ToPropertyEx(this, x => x.ShowCheckboxIsChecked);
+
+```
+and when its changed in above pipeline in ViewModel, the following will be triggered:
+```
+ this.WhenAnyValue(x => x.NameTxt)
+                 .Do(x =>
+                 {
+                     Console.WriteLine(x);
+                 })
+                 .Skip(1)
+                 .Subscribe(txt =>
+                 {
+                     Console.WriteLine(txt);
+                     // do other side-effects here
+                 });
+```

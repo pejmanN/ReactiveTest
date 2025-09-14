@@ -194,6 +194,19 @@ and in viewmodel:
 ```
 which call the `OnChildrenCountChanged` from ViewModel, its working fine.
 
+
+if u pay attention ` public List<Room> RoomList { get; private set; } = [];` is not `Reactive` , the 
+UI will be updated becuse of `[Reactive] public int RoomCount { get; set; }` since its reavtive and after change
+it publish the Event so UI will be updated.
+
+so consider the situation u eneter 2 as `RoomCount` and 2 romms will be renders on screen, now u are going to
+change value for `ChildrenCount` and `ChangeFromViewModel` since it not reactive (even RoomList is not Reactive)
+the UI will be updated because:
+
+>Blazor re-renders after the event handler.
+Blazor automatically calls StateHasChanged at the end of UI event handlers.
+That means even though RoomList/ChildrenList aren’t [Reactive] and you didn’t raise PropertyChanged, the component still re-runs its render.
+
 2) if u are going to use ReactiveFunction, u have to something like following:
 
 in view model
