@@ -221,7 +221,8 @@ in view model
                }
            });
 ```
-and razor:
+and razor ( we dont need following onchangeFunction `@oninput="@(e => RoomViewModel.OnChildrenCountChanged(room, e))"` anymore since
+we are using Reactive to detect change):
 ```
   <label>ChildrenCount:</label>
   <input type="number" class="form-control" @bind-value="room.ChildrenCount" @bind-value:event="oninput" />

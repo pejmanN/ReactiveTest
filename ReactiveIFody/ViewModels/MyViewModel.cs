@@ -36,7 +36,7 @@ namespace ReactiveIFody.ViewModels
         //private readonly ObservableAsPropertyHelper<bool> _canClear;
         //public bool CanClear => _canClear.Value;
 
-        [ObservableAsProperty] 
+        [ObservableAsProperty]
         public bool CanClear { get; set; }
         #endregion
 
@@ -53,7 +53,8 @@ namespace ReactiveIFody.ViewModels
             //    .ToProperty(this, x => x.DisplayText); 
 
             this.WhenAnyValue(x => x.Text)
-                .ToPropertyEx(this, x => x.DisplayText);
+            //.Subscribe(val => DisplayText = val);
+            .ToPropertyEx(this, x => x.DisplayText);
 
             // agar bekhaim ba BindTo() benevisim "DisplayText" dg niaz be [ObservableAsProperty] nadre:
             //public string DisplayText { get; set; }

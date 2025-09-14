@@ -15,9 +15,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-ReactiveUITest", "02-Rea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestReactiveUI2", "TestReactiveUI2\TestReactiveUI2.csproj", "{E05FFAF4-0695-45B5-9629-29CA19839850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveIFody", "ReactiveIFody\ReactiveIFody.csproj", "{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveIFody", "ReactiveIFody\ReactiveIFody.csproj", "{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveAndFodyTst.Client", "ReactiveAndFodyTst.Client\ReactiveAndFodyTst.Client.csproj", "{11817E06-6C20-4552-A221-AB0680A7AD87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveAndFodyTst.Client", "ReactiveAndFodyTst.Client\ReactiveAndFodyTst.Client.csproj", "{11817E06-6C20-4552-A221-AB0680A7AD87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03-Mud", "03-Mud", "{AA278769-CF11-4BB7-B537-0C08E672D324}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MudTst", "MudTst\MudTst.csproj", "{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,10 @@ Global
 		{11817E06-6C20-4552-A221-AB0680A7AD87}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11817E06-6C20-4552-A221-AB0680A7AD87}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11817E06-6C20-4552-A221-AB0680A7AD87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +63,7 @@ Global
 		{E05FFAF4-0695-45B5-9629-29CA19839850} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
 		{6635DB6D-5A5B-4A97-8FED-42EEF1E44FDA} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
 		{11817E06-6C20-4552-A221-AB0680A7AD87} = {6ABA26B4-205F-4F16-BF92-8B1E86131A6C}
+		{41BA507C-A3BD-48D1-AC8D-E131A1CA15E6} = {AA278769-CF11-4BB7-B537-0C08E672D324}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4F249690-6CB5-40BA-98B9-5BEBCF100913}

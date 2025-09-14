@@ -21,14 +21,13 @@ namespace ReactiveAndFodyTst.Client.ViewModels
                     {
                         RoomList.Add(new Room());
                     }
-
                 });
-
         }
 
-        public void OnChildrenCountChanged(Room room, ChangeEventArgs e)
+        public static void OnChildrenCountChanged(Room room, ChangeEventArgs e)
         {
             if (e.Value is null) return;
+
             if (int.TryParse(e.Value?.ToString(), out int value))
             {
                 room.ChildrenList.Clear();
@@ -37,12 +36,10 @@ namespace ReactiveAndFodyTst.Client.ViewModels
                     room.ChildrenList.Add(new Children());
                 }
             }
-
-            
         }
+
         public void Save()
         {
-
             var t = RoomList;
         }
 

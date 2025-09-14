@@ -26,8 +26,9 @@
                     <input type="text" class="form-control" @bind-value="room.AdultCount" @bind-value:event="oninput" />
 
                     <label>ChildrenCount:</label>
-                    <input type="text" class="form-control" @bind-value="room.ChildrenCount"
-                           @oninput="@(e => ViewModel.OnChildrenCountChanged(room, e))" />
+                    <input type="text" class="form-control" 
+                            @bind-value="room.ChildrenCount"
+                            @oninput="@(e => RoomViewModel.OnChildrenCountChanged(room, e))" />
                     @foreach (var children in room.ChildrenList)
                     {
 
