@@ -28,7 +28,7 @@ namespace ReactiveAndFodyTst.Client.ViewModels
                 });
         }
 
-        public static void OnChildrenCountChanged(Room room, ChangeEventArgs e)
+        public void OnChildrenCountChanged(Room room, ChangeEventArgs e)
         {
             if (e.Value is null) return;
 

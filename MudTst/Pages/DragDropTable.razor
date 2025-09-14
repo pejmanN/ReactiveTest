@@ -1,0 +1,104 @@
+﻿@page "/dragdrop-table"
+
+@using System
+@using System.Collections.Generic
+
+<div ondragover="event.preventDefault()">
+    <MudTable Style="max-height:400px; overflow-y:auto; display:block;"
+              Items="_whateverData"
+              @ref="_thisTable">
+
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel SortBy="@((Func<Person, object>)(x => x.Id))">
+                    Id
+                </MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="@((Func<Person, object>)(x => x.Name))">
+                    Something relevant
+                </MudTableSortLabel>
+            </MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTr @ondrop="() => HandleDrop(context)"
+                   @key="context"
+                   class="@(context.IsDragOver ? "border-t-2 border-red-500" : "")"
+                   @ondragleave="@(() => context.IsDragOver = false)"
+                   @ondragenter="@(() => context.IsDragOver = true)"
+                   @ondragstart="() => _draggedWhateverData = context"
+                   @ondragend="() => _draggedWhateverData = null"
+                   draggable="true">
+                <MudTd>
+                    @context.Id
+                </MudTd>
+                <MudTd>
+                    @context.Name
+                </MudTd>
+            </MudTr>
+        </RowTemplate>
+    </MudTable>
+</div>
+
+@code {
+    private List<Person>? _whateverData;
+    private Person? _draggedWhateverData;
+    private MudTable<Person>? _thisTable;
+
+    protected override Task OnInitializedAsync()
+    {
+        _whateverData = new()
+        {
+            new Person { Id = 1, Name = "RD 1", PositionInList = 1 },
+            new Person { Id = 2, Name = "RD 2", PositionInList = 2 },
+            new Person { Id = 3, Name = "RD 3", PositionInList = 3 },
+            new Person { Id = 4, Name = "RD 4", PositionInList = 4 },
+            new Person { Id = 5, Name = "RD 5", PositionInList = 5 },
+            new Person { Id = 6, Name = "RD 6", PositionInList = 6 },
+            new Person { Id = 7, Name = "RD 7", PositionInList = 7 },
+            new Person { Id = 8, Name = "RD 8", PositionInList = 8 },
+            new Person { Id = 9, Name = "RD 9", PositionInList = 9 },
+            new Person { Id = 10, Name = "RD 10", PositionInList = 10 },
+            // duplicates are fine; we rely on reference equality when reordering
+            new Person { Id = 11, Name = "RD 11", PositionInList = 11 },
+            new Person { Id = 12, Name = "RD 12", PositionInList = 12 },
+        };
+        return Task.CompletedTask;
+    }
+
+    private void HandleDrop(Person displacedWhateverData)
+    {
+        if (_draggedWhateverData is null || _whateverData is null) return;
+
+        // Reference equality: works even with duplicate Ids
+        int from = _whateverData.IndexOf(_draggedWhateverData);
+        int to = _whateverData.IndexOf(displacedWhateverData);
+
+        if (from < 0 || to < 0 || from == to) return;
+
+        var item = _draggedWhateverData;
+        _whateverData.RemoveAt(from);
+
+        int insertIndex = from > to ? to : to - 1;
+        _whateverData.Insert(insertIndex, item);
+
+        // Re-number ListPlacement to match new visual order (optional)
+        for (int i = 0; i < _whateverData.Count; i++)
+            _whateverData[i].PositionInList = i + 1;
+
+        // Clear drag-over flags
+        foreach (var w in _whateverData)
+            w.IsDragOver = false;
+
+        _draggedWhateverData = null;
+        StateHasChanged();
+    }
+
+    public class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public int PositionInList { get; set; }
+        public bool IsDragOver { get; set; }
+    }
+}
