@@ -1,0 +1,47 @@
+﻿
+@page "/dragdrop-reactive-table"
+@inherits ReactiveComponentBase<ViewModels.DragDropReactivViewModel>
+
+<div ondragover="event.preventDefault()">
+    <MudTable T="ViewModels.Person"
+              Style="max-height:400px; overflow-y:auto; display:block;"
+              Items="ViewModel.People"
+              @ref="_table">
+
+        <HeaderContent>
+            <MudTh>
+                <MudTableSortLabel SortBy="@((Func<ViewModels.Person, object>)(x => x.Id))">
+                    Id
+                </MudTableSortLabel>
+            </MudTh>
+            <MudTh>
+                <MudTableSortLabel SortBy="@((Func<ViewModels.Person, object>)(x => x.Name))">
+                    Name
+                </MudTableSortLabel>
+            </MudTh>
+        </HeaderContent>
+
+        <RowTemplate Context="person">
+            <MudTr class="@(person.IsDragOver ? "border-t-2 border-red-500" : "")"
+                   @key="person"
+                   @ondragstart="() => ViewModel.DragStart(person)"
+                   @ondragend="ViewModel.DragEnd"
+                   @ondragenter="@(() => ViewModel.DragEnter(person))"
+                   @ondragleave="@(() => ViewModel.DragLeave(person))"
+                   @ondrop="@(() => ViewModel.DropOn(person))"
+                   draggable="true">
+                <MudTd>@person.Id</MudTd>
+                <MudTd>@person.Name</MudTd>
+            </MudTr>
+        </RowTemplate>
+    </MudTable>
+</div>
+
+@code {
+    private MudTable<ViewModels.Person>? _table;
+
+    protected override void OnInitialized()
+    {
+        ViewModel ??= new ViewModels.DragDropReactivViewModel();
+    }
+}
